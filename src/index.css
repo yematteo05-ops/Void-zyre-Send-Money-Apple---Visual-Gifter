@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+:root {
+  --apple-font-text: "SF Pro Text", "SF Pro Icons", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --apple-font-display: "SF Pro Display", "SF Pro Icons", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --apple-blue: #0071e3;
+  --apple-blue-hover: #0077ed;
+  --apple-blue-active: #006edb;
+  --apple-gray-bg: #f5f5f7;
+  --apple-border: #d2d2d7;
+  --apple-text-primary: #1d1d1f;
+  --apple-text-secondary: #6e6e73;
+}
+
+body {
+  font-family: var(--apple-font-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #1d1d1f;
+}
+
+.apple-font-display {
+  font-family: var(--apple-font-display);
+}
+
+.apple-font-text {
+  font-family: var(--apple-font-text);
+}
+
+/* Apple Dialog Backdrop */
+.apple-backdrop {
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Complete CSS Isolation inside .apple-sheet so common.css button rules never apply */
+.apple-sheet,
+.apple-sheet * {
+  box-sizing: border-box !important;
+}
+
+.apple-sheet button {
+  box-sizing: border-box !important;
+  all: unset;
+  cursor: pointer !important;
+  font-family: var(--apple-font-text) !important;
+}
+
+/* Apple Squircle Dialog Container */
+.apple-sheet {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 24px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Apple Stage Showcase */
+.apple-stage {
+  background: #f5f5f7;
+  border-radius: 20px;
+  border: 1px solid #e5e5ea;
+}
+
+/* Apple Store Signature Tall Input */
+.apple-input-field {
+  height: 52px;
+  background: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-size: 17px;
+  color: #1d1d1f;
+  font-family: var(--apple-font-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+  display: block;
+}
+
+.apple-input-field:focus {
+  outline: none;
+  border-color: #0071e3;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.16);
+}
+
+.apple-input-field::placeholder {
+  color: #86868b;
+  font-weight: 400;
+}
+
+/* Apple Store Storage Tile Selection - Clean Wide Box */
+.apple-tile {
+  background: #ffffff !important;
+  border: 1px solid #d2d2d7 !important;
+  border-radius: 12px !important;
+  padding: 16px 14px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  font-family: var(--apple-font-text) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-height: 80px !important;
+  box-sizing: border-box !important;
+}
+
+.apple-tile:hover {
+  border-color: #86868b !important;
+}
+
+.apple-tile.selected {
+  border: 2px solid #0071e3 !important;
+  box-shadow: 0 0 0 1px #0071e3 !important;
+  background: #ffffff !important;
+}
+
+/* Apple Store Finish Swatch Pill */
+.apple-swatch-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 18px !important;
+  border-radius: 980px !important;
+  border: 1px solid #d2d2d7 !important;
+  background: #ffffff !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  font-family: var(--apple-font-text) !important;
+  box-sizing: border-box !important;
+}
+
+.apple-swatch-pill:hover {
+  border-color: #86868b !important;
+}
+
+.apple-swatch-pill.selected {
+  border: 2px solid #0071e3 !important;
+  box-shadow: 0 0 0 1px #0071e3 !important;
+}
+
+/* Apple Pill Button */
+.apple-cta-primary {
+  background-color: #0071e3 !important;
+  color: #ffffff !important;
+  border-radius: 980px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.016em !important;
+  padding: 13px 26px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  border: none !important;
+  transition: all 0.15s ease !important;
+  font-family: var(--apple-font-text) !important;
+  box-sizing: border-box !important;
+}
+
+.apple-cta-primary:hover {
+  background-color: #0077ed !important;
+}
+
+.apple-cta-primary:active {
+  background-color: #006edb !important;
+  transform: scale(0.99) !important;
+}
+
+.apple-cta-secondary {
+  background-color: #f5f5f7 !important;
+  color: #1d1d1f !important;
+  border-radius: 980px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.016em !important;
+  padding: 13px 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  border: none !important;
+  transition: all 0.15s ease !important;
+  font-family: var(--apple-font-text) !important;
+  box-sizing: border-box !important;
+}
+
+.apple-cta-secondary:hover {
+  background-color: #e8e8ed !important;
+}
+
+.apple-cta-secondary:active {
+  transform: scale(0.99) !important;
+}
+
+/* Official PayPal Gold Pill Button */
+.apple-paypal-gold-btn {
+  background-color: #ffc439 !important;
+  color: #003087 !important;
+  border-radius: 980px !important;
+  height: 52px !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.15s ease !important;
+  font-family: var(--apple-font-text) !important;
+  box-sizing: border-box !important;
+}
+
+.apple-paypal-gold-btn:hover {
+  background-color: #f2ba36 !important;
+}
+
+.apple-paypal-gold-btn:active {
+  background-color: #e5b033 !important;
+  transform: scale(0.99) !important;
+}
+
+/* Apple Close Button */
+.apple-close-btn {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background-color: #f5f5f7 !important;
+  color: #6e6e73 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  border: none !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+  box-sizing: border-box !important;
+}
+
+.apple-close-btn:hover {
+  background-color: #e8e8ed !important;
+  color: #1d1d1f !important;
+}
