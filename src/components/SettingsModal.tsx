@@ -173,6 +173,24 @@ export function SettingsModal({ isOpen, onClose, settings, onSaveSettings }: Set
             </a>
           </div>
 
+          {/* Admin Link & Security */}
+          <div className="pt-2 flex items-center justify-between text-xs border-t border-[#d2d2d7]/50">
+            <a
+              href="/adminvoid"
+              onClick={(e) => {
+                e.preventDefault();
+                onClose();
+                window.history.pushState({}, '', '/adminvoid');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}
+              className="text-[#0071e3] hover:underline flex items-center gap-1 font-mono font-semibold cursor-pointer"
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Admin Panel (/adminvoid)</span>
+            </a>
+            <span className="text-[10px] text-[#86868b]">Void Hub 2026</span>
+          </div>
+
           {/* Save / Reset Actions */}
           <div className="pt-4 border-t border-[#d2d2d7] flex items-center justify-between gap-3">
             <button

@@ -93,14 +93,9 @@ export const SpecialistChat: React.FC<SpecialistChatProps> = ({ isOpen, onClose,
         <div className="flex items-center justify-between px-6 py-4 border-b border-black/5 dark:border-white/10 bg-white/80 dark:bg-[#2c2c2e]/80 backdrop-blur-md">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <img
-                src="/images/step1-chat-specialist.png"
-                alt="Apple Specialist"
-                className="w-10 h-10 rounded-full border border-black/10 object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/step1-chat-specialist?wid=108&hei=108&fmt=png-alpha';
-                }}
-              />
+              <div className="w-10 h-10 rounded-full bg-[#0071e3]/10 border border-[#0071e3]/20 flex items-center justify-center text-[#0071e3]">
+                <Bot className="w-5 h-5" />
+              </div>
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#34c759] border-2 border-white rounded-full"></span>
             </div>
             <div>

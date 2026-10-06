@@ -146,6 +146,51 @@
     visibility: visible !important;
     pointer-events: auto !important;
   }
+
+  /* Extended Product Card Height & Bottom Clearance */
+  .rf-hcard,
+  .rf-hcard-40,
+  .rf-ccard,
+  .rf-ccard-40,
+  .rf-cards-scroller-item .rf-hcard,
+  .rf-cards-scroller-item .rf-ccard,
+  .rf-cards-scroller-itemview .rf-hcard,
+  .rf-cards-scroller-itemview .rf-ccard {
+    height: 560px !important;
+    min-height: 560px !important;
+  }
+
+  .rf-cards-scroller-item,
+  .rf-cards-scroller-itemview {
+    min-height: 560px !important;
+  }
+
+  .rf-hcard-scrim {
+    bottom: 24px !important;
+    padding-bottom: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .rf-hcard-scrim-price,
+  .rf-hcard-scrim .price,
+  .rf-hcard-scrim .price-point {
+    line-height: 1.4 !important;
+    font-size: 12px !important;
+    padding-bottom: 2px !important;
+  }
+
+  .rf-hcard-scrim .price-point-poiPrice {
+    display: block !important;
+    margin-top: 4px !important;
+    line-height: 1.35 !important;
+  }
+
+  .rf-hcard-cta,
+  .rf-hcard-buy-button,
+  .rf-hcard .button {
+    margin-bottom: 2px !important;
+    flex-shrink: 0 !important;
+  }
 </style>
 
 

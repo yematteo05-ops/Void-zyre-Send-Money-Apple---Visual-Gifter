@@ -56,3 +56,25 @@ export interface ChatMessage {
   timestamp: string;
   suggestions?: string[];
 }
+
+export interface AccessKey {
+  id: string;
+  key: string;
+  duration?: string;
+  duration_hours?: number;
+  status: 'unactivated' | 'active' | 'expired' | 'revoked';
+  tag?: string;
+  note?: string;
+  max_hwid?: any;
+  max_devices?: number;
+  devices?: any[];
+  timer_mode?: 'continuous' | 'active_usage';
+  remaining_seconds?: number;
+  activated_at?: string;
+  last_used_at?: string;
+  used_count?: number;
+  discord_username?: string;
+  discord_user?: string;
+  created_at?: string;
+  is_lifetime?: boolean;
+}

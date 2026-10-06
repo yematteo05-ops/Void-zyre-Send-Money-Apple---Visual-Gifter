@@ -468,75 +468,6 @@ export function GiftModal({
                   />
                 </div>
 
-                {/* Official Apple Gift Note (Fixed by Void Hub) */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-[14px] font-semibold text-[#1d1d1f]">
-                      Official Gift Note Included (Free)
-                    </label>
-                    <span className="text-xs text-[#34c759] font-semibold">Embossed on Signature Card</span>
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-[#f5f5f7] border border-[#d2d2d7] flex items-center justify-between text-[#1d1d1f]">
-                    <span className="text-sm font-medium select-all">By Void Hub https://discord.gg/brhBspMGAj</span>
-                    <span className="text-[11px] text-[#86868b] font-normal">Permanent Note</span>
-                  </div>
-                </div>
-
-                {/* Ribbon Color Selector - Wide Grid */}
-                <div className="space-y-2 p-4 rounded-2xl bg-[#f5f5f7] border border-[#d2d2d7]">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#6e6e73]">
-                    Select Apple Packaging Ribbon Color
-                  </label>
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-                      gap: '10px',
-                      width: '100%'
-                    }}
-                  >
-                    {[
-                      { name: 'Signature Red', hex: '#ff3b30' },
-                      { name: 'Space Gray', hex: '#48484a' },
-                      { name: 'Holiday Gold', hex: '#d4af37' },
-                      { name: 'Pride Edition', hex: 'linear-gradient(90deg, #ff3b30, #ff9500, #34c759, #007aff)' }
-                    ].map((ribbon) => (
-                      <div
-                        key={ribbon.name}
-                        role="button"
-                        onClick={() => setRibbonColor(ribbon.name)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          padding: '10px 12px',
-                          borderRadius: '12px',
-                          border: ribbonColor === ribbon.name ? '2px solid #0071e3' : '1px solid #d2d2d7',
-                          backgroundColor: '#ffffff',
-                          boxShadow: ribbonColor === ribbon.name ? '0 0 0 1px #0071e3' : 'none',
-                          cursor: 'pointer',
-                          boxSizing: 'border-box',
-                          transition: 'all 0.15s ease'
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: '14px',
-                            height: '14px',
-                            borderRadius: '50%',
-                            background: ribbon.hex,
-                            border: '1px solid rgba(0,0,0,0.15)',
-                            flexShrink: 0
-                          }}
-                        />
-                        <span style={{ fontSize: '12px', fontWeight: 600, color: '#1d1d1f', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {ribbon.name}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Delivery Scheduling - Wide Comfortable Grid */}
                 <div className="space-y-2 p-4 rounded-2xl bg-[#f5f5f7] border border-[#d2d2d7]">
                   <label className="block text-xs font-bold uppercase tracking-wider text-[#6e6e73]">
@@ -663,7 +594,7 @@ export function GiftModal({
                     Customise their {product.name}.
                   </h2>
                   <p className="text-sm text-[#6e6e73]">
-                    Gifting to <strong className="text-[#0071e3]">{recipientEmail}</strong> with {ribbonColor} ribbon packaging
+                    Gifting to <strong className="text-[#0071e3]">{recipientEmail}</strong>
                   </p>
                 </div>
 
@@ -1361,7 +1292,7 @@ export function GiftModal({
                     )}
                     <div className="flex justify-between">
                       <span className="text-[#6e6e73]">Packaging</span>
-                      <strong>Signature Gift Box with {ribbonColor} Ribbon</strong>
+                      <strong>Signature Apple Gift Box</strong>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6e6e73]">From</span>

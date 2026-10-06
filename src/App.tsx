@@ -9,9 +9,75 @@ import { TradeInModal } from './components/TradeInModal';
 import { CompareModal } from './components/CompareModal';
 import { OrderLookupModal } from './components/OrderLookupModal';
 import { SettingsModal, UserSettings, DEFAULT_USER_SETTINGS } from './components/SettingsModal';
+import { KeyLockModal } from './components/KeyLockModal';
+import { AdminVoidPanel } from './components/AdminVoidPanel';
+import { DevSwitcherWindow } from './components/DevSwitcherWindow';
 import { initDomController, updateBagBadge } from './utils/domController';
 
 export default function App() {
+  const [currentPath, setCurrentPath] = useState(() => window.location.pathname + window.location.search);
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
+    try {
+      return Boolean(localStorage.getItem('site_key_validated'));
+    } catch {
+      return false;
+    }
+  });
+
+  const [adminRevocationNotice, setAdminRevocationNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname + window.location.search);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Check if admin panel is requested
+  const isAdminRoute = currentPath.includes('/adminvoid') || window.location.pathname.includes('/adminvoid');
+  const isAccessRoute = currentPath.includes('/access') || window.location.pathname.includes('/access') || !isUnlocked;
+
+  // Hide Apple Store DOM (#page) completely when locked or on admin/access routes
+  useEffect(() => {
+    const pageEl = document.getElementById('page');
+    const portalEl = document.getElementById('portal');
+    const isLockedOrAdmin = !isUnlocked || isAccessRoute || isAdminRoute;
+
+    if (pageEl) {
+      if (isLockedOrAdmin) {
+        pageEl.style.display = 'none';
+        pageEl.style.visibility = 'hidden';
+        pageEl.setAttribute('aria-hidden', 'true');
+      } else {
+        pageEl.style.display = 'block';
+        pageEl.style.visibility = 'visible';
+        pageEl.removeAttribute('aria-hidden');
+      }
+    }
+
+    if (portalEl) {
+      if (isLockedOrAdmin) {
+        portalEl.style.display = 'none';
+      } else {
+        portalEl.style.display = '';
+      }
+    }
+
+    if (isLockedOrAdmin) {
+      window.scrollTo(0, 0);
+      document.body.classList.add('is-locked');
+      document.documentElement.classList.add('is-locked');
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.classList.remove('is-locked');
+      document.documentElement.classList.remove('is-locked');
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+  }, [isUnlocked, isAccessRoute, isAdminRoute]);
+
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('apple_store_bag');
@@ -57,24 +123,26 @@ export default function App() {
   }, [cartItems]);
 
   useEffect(() => {
-    const totalCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
-    initDomController({
-      onOpenGiftModal: (modelId: string) => {
-        const prod = IPHONE_PRODUCTS.find((p) => p.id === modelId) || IPHONE_PRODUCTS[0];
-        setActiveGiftProduct(prod);
-      },
-      onOpenBuyModal: (modelId: string) => {
-        const prod = IPHONE_PRODUCTS.find((p) => p.id === modelId) || IPHONE_PRODUCTS[0];
-        setActiveGiftProduct(prod);
-      },
-      onOpenChat: () => setIsChatOpen(true),
-      onOpenBag: () => setIsBagOpen(true),
-      onOpenCompare: () => setIsCompareOpen(true),
-      onOpenTradeIn: () => setIsTradeInOpen(true),
-      onOpenSettings: () => setIsSettingsOpen(true),
-      bagCount: totalCount
-    });
-  }, []);
+    if (isUnlocked && !isAdminRoute) {
+      const totalCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
+      initDomController({
+        onOpenGiftModal: (modelId: string) => {
+          const prod = IPHONE_PRODUCTS.find((p) => p.id === modelId) || IPHONE_PRODUCTS[0];
+          setActiveGiftProduct(prod);
+        },
+        onOpenBuyModal: (modelId: string) => {
+          const prod = IPHONE_PRODUCTS.find((p) => p.id === modelId) || IPHONE_PRODUCTS[0];
+          setActiveGiftProduct(prod);
+        },
+        onOpenChat: () => setIsChatOpen(true),
+        onOpenBag: () => setIsBagOpen(true),
+        onOpenCompare: () => setIsCompareOpen(true),
+        onOpenTradeIn: () => setIsTradeInOpen(true),
+        onOpenSettings: () => setIsSettingsOpen(true),
+        bagCount: totalCount
+      });
+    }
+  }, [isUnlocked, isAdminRoute, cartItems]);
 
   const handleAddToCart = (item: CartItem) => {
     setCartItems((prev) => {
@@ -106,74 +174,135 @@ export default function App() {
     setCartItems((prev) => prev.filter((i) => i.id !== id));
   };
 
+  // Dev Switcher Handlers
+  const handleSwitchToLockscreen = () => {
+    try {
+      localStorage.removeItem('site_key_validated');
+      localStorage.removeItem('site_key_lifetime');
+      localStorage.removeItem('site_key_expires_at');
+    } catch {}
+    setIsUnlocked(false);
+    window.history.pushState({}, '', '/access');
+    setCurrentPath('/access');
+  };
+
+  const handleSwitchToAppleStore = () => {
+    try {
+      localStorage.setItem('site_key_validated', 'VOID-DEMO-2026');
+      localStorage.setItem('site_key_lifetime', 'true');
+    } catch {}
+    setIsUnlocked(true);
+    window.history.pushState({}, '', '/');
+    setCurrentPath('/');
+  };
+
+  const handleSwitchToAdmin = () => {
+    window.history.pushState({}, '', '/adminvoid');
+    setCurrentPath('/adminvoid');
+  };
+
   return (
-    <>
-      {/* Gift Modal (Primary Experience with Zyre, Void Hub Discord, Real vector Apple Logo) */}
-      <GiftModal
-        product={activeGiftProduct}
-        onClose={() => setActiveGiftProduct(null)}
-        userSettings={userSettings}
-        onSaveSettings={handleSaveSettings}
+    <div id="interactive-app-wrapper">
+      {/* Dev Switcher Bar */}
+      <DevSwitcherWindow
+        key="global-dev-switcher"
+        currentRoute={currentPath}
+        isUnlocked={isUnlocked}
+        onSwitchToLockscreen={handleSwitchToLockscreen}
+        onSwitchToAppleStore={handleSwitchToAppleStore}
+        onSwitchToAdmin={handleSwitchToAdmin}
       />
 
-      {/* Account, Balance & Profile Settings Modal (Triggered by Search button in nav) */}
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        settings={userSettings}
-        onSaveSettings={handleSaveSettings}
-      />
+      {isAdminRoute ? (
+        <AdminVoidPanel
+          key="admin-void-panel-view"
+          onExit={() => {
+            window.history.pushState({}, '', '/');
+            setCurrentPath('/');
+          }}
+        />
+      ) : (!isUnlocked || isAccessRoute) ? (
+        <KeyLockModal
+          key="key-lock-modal-view"
+          isLocked={true}
+          onUnlock={() => {
+            setIsUnlocked(true);
+            window.history.pushState({}, '', '/');
+            setCurrentPath('/');
+          }}
+          adminRevocationNotice={adminRevocationNotice}
+          onDismissRevocationNotice={() => setAdminRevocationNotice(null)}
+        />
+      ) : (
+        <div key="store-modals-group" id="store-modals-group">
+          {/* Gift Modal */}
+          <GiftModal
+            product={activeGiftProduct}
+            onClose={() => setActiveGiftProduct(null)}
+            userSettings={userSettings}
+            onSaveSettings={handleSaveSettings}
+          />
 
-      {/* Standard Buy Modal */}
-      <BuyModal
-        product={activeBuyProduct}
-        onClose={() => setActiveBuyProduct(null)}
-        onAddToCart={handleAddToCart}
-      />
+          {/* Account, Balance & Profile Settings Modal */}
+          <SettingsModal
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
+            settings={userSettings}
+            onSaveSettings={handleSaveSettings}
+          />
 
-      {/* Apple Bag Drawer */}
-      <BagDrawer
-        isOpen={isBagOpen}
-        onClose={() => setIsBagOpen(false)}
-        items={cartItems}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-        onClearCart={() => setCartItems([])}
-      />
+          {/* Standard Buy Modal */}
+          <BuyModal
+            product={activeBuyProduct}
+            onClose={() => setActiveBuyProduct(null)}
+            onAddToCart={handleAddToCart}
+          />
 
-      {/* Apple Specialist Chat */}
-      <SpecialistChat
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        onOpenBuyModal={(modelId) => {
-          const prod = IPHONE_PRODUCTS.find((p) => p.id === modelId) || IPHONE_PRODUCTS[0];
-          setActiveGiftProduct(prod);
-        }}
-      />
+          {/* Apple Bag Drawer */}
+          <BagDrawer
+            isOpen={isBagOpen}
+            onClose={() => setIsBagOpen(false)}
+            items={cartItems}
+            onUpdateQuantity={handleUpdateQuantity}
+            onRemoveItem={handleRemoveItem}
+            onClearCart={() => setCartItems([])}
+          />
 
-      {/* Trade-in Estimator */}
-      <TradeInModal
-        isOpen={isTradeInOpen}
-        onClose={() => setIsTradeInOpen(false)}
-      />
+          {/* Apple Specialist Chat */}
+          <SpecialistChat
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+            onOpenBuyModal={(modelId) => {
+              const prod = IPHONE_PRODUCTS.find((p) => p.id === modelId) || IPHONE_PRODUCTS[0];
+              setActiveGiftProduct(prod);
+            }}
+          />
 
-      {/* Compare Models */}
-      <CompareModal
-        isOpen={isCompareOpen}
-        onClose={() => setIsCompareOpen(false)}
-        onSelectBuy={(modelId: string) => {
-          setIsCompareOpen(false);
-          const prod = IPHONE_PRODUCTS.find((p) => p.id === modelId) || IPHONE_PRODUCTS[0];
-          setActiveGiftProduct(prod);
-        }}
-      />
+          {/* Trade-in Estimator */}
+          <TradeInModal
+            isOpen={isTradeInOpen}
+            onClose={() => setIsTradeInOpen(false)}
+          />
 
-      {/* Order Lookup Modal */}
-      <OrderLookupModal
-        isOpen={isOrderLookupOpen}
-        onClose={() => setIsOrderLookupOpen(false)}
-        defaultOrderNumber={lookupOrderNumber}
-      />
-    </>
+          {/* Compare Models */}
+          <CompareModal
+            isOpen={isCompareOpen}
+            onClose={() => setIsCompareOpen(false)}
+            onSelectBuy={(modelId: string) => {
+              setIsCompareOpen(false);
+              const prod = IPHONE_PRODUCTS.find((p) => p.id === modelId) || IPHONE_PRODUCTS[0];
+              setActiveGiftProduct(prod);
+            }}
+          />
+
+          {/* Order Lookup Modal */}
+          <OrderLookupModal
+            isOpen={isOrderLookupOpen}
+            onClose={() => setIsOrderLookupOpen(false)}
+            defaultOrderNumber={lookupOrderNumber}
+          />
+        </div>
+      )}
+    </div>
   );
 }
