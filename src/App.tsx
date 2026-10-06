@@ -15,7 +15,9 @@ import { DevSwitcherWindow } from './components/DevSwitcherWindow';
 import { initDomController, updateBagBadge } from './utils/domController';
 
 export default function App() {
-  const [currentPath, setCurrentPath] = useState(() => window.location.pathname + window.location.search);
+  const [currentPath, setCurrentPath] = useState(() => {
+    return (window.location.pathname + window.location.search + window.location.hash).toLowerCase();
+  });
   const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
     try {
       return Boolean(localStorage.getItem('site_key_validated'));
@@ -27,16 +29,27 @@ export default function App() {
   const [adminRevocationNotice, setAdminRevocationNotice] = useState<string | null>(null);
 
   useEffect(() => {
-    const handlePopState = () => {
-      setCurrentPath(window.location.pathname + window.location.search);
+    const handleRouteChange = () => {
+      setCurrentPath((window.location.pathname + window.location.search + window.location.hash).toLowerCase());
     };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('popstate', handleRouteChange);
+    window.addEventListener('hashchange', handleRouteChange);
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+      window.removeEventListener('hashchange', handleRouteChange);
+    };
   }, []);
 
-  // Check if admin panel is requested
-  const isAdminRoute = currentPath.includes('/adminvoid') || window.location.pathname.includes('/adminvoid');
-  const isAccessRoute = currentPath.includes('/access') || window.location.pathname.includes('/access') || !isUnlocked;
+  // Check if admin panel is requested (via pathname, hash, or query param)
+  const isAdminRoute =
+    currentPath.includes('adminvoid') ||
+    currentPath.includes('/admin') ||
+    currentPath.includes('#admin');
+
+  const isAccessRoute =
+    currentPath.includes('access') ||
+    currentPath.includes('#access') ||
+    !isUnlocked;
 
   // Hide Apple Store DOM (#page) completely when locked or on admin/access routes
   useEffect(() => {
