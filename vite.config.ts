@@ -1,7 +1,26 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import path from 'path';
 import {defineConfig, Plugin} from 'vite';
+
+function spa404Fallback(): Plugin {
+  return {
+    name: 'spa-404-fallback',
+    closeBundle() {
+      try {
+        const outDir = path.resolve(import.meta.dirname || '.', 'dist');
+        const indexPath = path.join(outDir, 'index.html');
+        const fallbackPath = path.join(outDir, '404.html');
+        if (fs.existsSync(indexPath)) {
+          fs.copyFileSync(indexPath, fallbackPath);
+        }
+      } catch (err) {
+        console.warn('Could not generate 404.html fallback:', err);
+      }
+    },
+  };
+}
 
 function appleShopApiMock(): Plugin {
   return {
@@ -32,7 +51,7 @@ function appleShopApiMock(): Plugin {
 
 export default defineConfig(() => {
   return {
-    plugins: [appleShopApiMock(), react(), tailwindcss()],
+    plugins: [appleShopApiMock(), react(), tailwindcss(), spa404Fallback()],
     resolve: {
       alias: {
         '@': path.resolve(import.meta.dirname || '.', '.'),
